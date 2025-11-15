@@ -119,11 +119,11 @@ function analyzeSalesData(data, options) {
       // Revenue округляется на каждом шаге через calculateRevenue
       const revenue = calculateRevenue(item, product);
       const cost = product.purchase_price * item.quantity;
-      const profit = revenue - cost;
+      // ВАЖНО: округляем profit на каждом шаге!
+      const profit = +(revenue - cost).toFixed(2);
 
-      // Суммируем с уже округленным revenue
+      // Суммируем с уже округленными значениями
       seller.revenue += revenue;
-      // Profit НЕ округляем, накапливаем точное значение
       seller.profit += profit;
 
       if (!seller.products_sold[item.sku]) {
@@ -151,10 +151,10 @@ function analyzeSalesData(data, options) {
   return sellerStats.map((seller) => ({
     seller_id: seller.id,
     name: seller.name,
-    revenue: Math.round(seller.revenue * 100) / 100,
-    profit: Math.round(seller.profit * 100) / 100,
+    revenue: +seller.revenue.toFixed(2),
+    profit: +seller.profit.toFixed(2),
     sales_count: seller.sales_count,
     top_products: seller.top_products,
-    bonus: Math.round(seller.bonus * 100) / 100,
+    bonus: +seller.bonus.toFixed(2),
   }));
 }
