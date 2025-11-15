@@ -47,7 +47,11 @@
 
 function calculateSimpleRevenue(purchase, _product) {
   const discountMultiplier = 1 - purchase.discount / 100;
-  return purchase.sale_price * purchase.quantity * discountMultiplier;
+  return +(
+    purchase.sale_price *
+    purchase.quantity *
+    discountMultiplier
+  ).toFixed(2);
 }
 
 function calculateBonusByProfit(index, total, seller) {
@@ -113,8 +117,8 @@ function analyzeSalesData(data, options) {
       if (!product) return;
 
       const revenue = calculateRevenue(item, product);
-      const cost = product.purchase_price * item.quantity;
-      const profit = revenue - cost;
+      const cost = +(product.purchase_price * item.quantity).toFixed(2);
+      const profit = +(revenue - cost).toFixed(2);
 
       seller.revenue += revenue;
       seller.profit += profit;
