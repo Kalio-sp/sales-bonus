@@ -47,19 +47,15 @@
 
 function calculateSimpleRevenue(purchase, _product) {
   const discountMultiplier = 1 - purchase.discount / 100;
-  return +(
-    purchase.sale_price *
-    purchase.quantity *
-    discountMultiplier
-  ).toFixed(2);
+  return purchase.sale_price * purchase.quantity * discountMultiplier;
 }
 
 function calculateBonusByProfit(index, total, seller) {
   const { profit } = seller;
-  if (index === 0) return +(profit * 0.15).toFixed(2);
-  if (index === 1 || index === 2) return +(profit * 0.1).toFixed(2);
+  if (index === 0) return profit * 0.15;
+  if (index === 1 || index === 2) return profit * 0.1;
   if (index === total - 1) return 0;
-  return +(profit * 0.05).toFixed(2);
+  return profit * 0.05;
 }
 
 function analyzeSalesData(data, options) {
@@ -143,7 +139,7 @@ function analyzeSalesData(data, options) {
       .slice(0, 10);
   });
 
-  // Формирование итогового отчёта
+  // Формирование итогового отчёта с округлением только в конце
   return sellerStats.map((seller) => ({
     seller_id: seller.id,
     name: seller.name,
