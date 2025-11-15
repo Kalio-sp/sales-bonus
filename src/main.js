@@ -119,10 +119,10 @@ function analyzeSalesData(data, options) {
       // Revenue округляется на каждом шаге через calculateRevenue
       const revenue = calculateRevenue(item, product);
       const cost = product.purchase_price * item.quantity;
-      // УБИРАЕМ округление прибыли на каждом шаге!
-      const profit = revenue - cost;
+      // ВАЖНО: округляем profit на каждом шаге!
+      const profit = +(revenue - cost).toFixed(2);
 
-      // Суммируем точные значения без промежуточного округления
+      // Суммируем с уже округленными значениями
       seller.revenue += revenue;
       seller.profit += profit;
 
