@@ -116,11 +116,14 @@ function analyzeSalesData(data, options) {
       const product = productIndex[item.sku];
       if (!product) return;
 
+      // Revenue округляется на каждом шаге через calculateRevenue
       const revenue = calculateRevenue(item, product);
-      const cost = +(product.purchase_price * item.quantity).toFixed(2);
-      const profit = +(revenue - cost).toFixed(2);
+      const cost = product.purchase_price * item.quantity;
+      const profit = revenue - cost;
 
+      // Суммируем с уже округленным revenue
       seller.revenue += revenue;
+      // Profit НЕ округляем, накапливаем точное значение
       seller.profit += profit;
 
       if (!seller.products_sold[item.sku]) {
@@ -135,6 +138,7 @@ function analyzeSalesData(data, options) {
 
   // Назначение бонусов и формирование топ-10 продуктов
   sellerStats.forEach((seller, index) => {
+    // Bonus тоже НЕ округляем, оставляем точное значение
     seller.bonus = calculateBonus(index, sellerStats.length, seller);
 
     seller.top_products = Object.entries(seller.products_sold)
@@ -143,14 +147,14 @@ function analyzeSalesData(data, options) {
       .slice(0, 10);
   });
 
-  // Формирование итогового отчёта с округлением только в конце
+  // Формирование итогового отчёта - округление ТОЛЬКО здесь
   return sellerStats.map((seller) => ({
     seller_id: seller.id,
     name: seller.name,
-    revenue: +seller.revenue.toFixed(2),
-    profit: +seller.profit.toFixed(2),
+    revenue: Math.round(seller.revenue * 100) / 100,
+    profit: Math.round(seller.profit * 100) / 100,
     sales_count: seller.sales_count,
     top_products: seller.top_products,
-    bonus: +seller.bonus.toFixed(2),
+    bonus: Math.round(seller.bonus * 100) / 100,
   }));
 }
