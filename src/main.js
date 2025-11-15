@@ -74,6 +74,15 @@ function analyzeSalesData(data, options) {
     throw new Error("Некорректные входные данные");
   }
 
+  // ДОБАВЛЕНО: проверка на пустые массивы
+  if (
+    data.sellers.length === 0 ||
+    data.products.length === 0 ||
+    data.purchase_records.length === 0
+  ) {
+    throw new Error("Некорректные входные данные");
+  }
+
   const { calculateRevenue, calculateBonus } = options;
 
   const sellerStats = data.sellers.map((s) => ({
@@ -102,7 +111,6 @@ function analyzeSalesData(data, options) {
 
       const revenue = calculateRevenue(item, product);
 
-      // ИЗМЕНЕНО: прибыль считается по формуле напрямую
       const profitItem = item.sale_price * (1 - item.discount / 100) * item.quantity - product.purchase_price * item.quantity;
 
       seller.revenue += revenue;
